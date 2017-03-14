@@ -117,27 +117,6 @@ $result = $conn->query($sql);
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <form class="form" role="form" action="/command.php?cmd=addItem" method="post">
-                                    <div class="form-group floating-label">
-                                        <input type="text" name="item" class="form-control" id="regular2" autocomplete="off">
-                                        <label for="regular2">Item Name</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        <input type="text" name="quantity" class="form-control" id="regular2" autocomplete="off">
-                                        <label for="regular2">Quantity</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        <div class="input-group">
-                                            <div class="input-group-content">
-                                                <input name="price" type="text" class="form-control" id="amount10" autocomplete="off">
-                                                <label for="amount10">Price</label>
-                                            </div>
-                                            <span class="input-group-addon">лв</span>
-                                        </div>
-                                    </div><!--end .form-group -->
-                                    <button type="submit" class="btn ink-reaction btn-raised btn-primary"> Add Item </a>
-                                </form>
-
                             </div><!--end .card-body -->
                         </div><!--end .card -->
                         <?php
@@ -155,10 +134,9 @@ $result = $conn->query($sql);
 
                                     <div class="card-actionbar">
                                         <div class="card-actionbar-row">
-                                            <form class="form" role="form" action="/command.php?cmd=addToCart" method="post">
-                                                <input name="user_id" value="<?= $_SESSION['user_id'] ?>" type="hidden">
-                                                <input name="item_id" value="<?= $row['id'] ?>" type="hidden">
-                                                <button type="submit" class="btn ink-reaction btn-raised btn-primary"> Add to cart </a>
+                                            <form class="form" role="form" action="/item.php" method="get">
+												<input name="item" value="<?= $row['id'] ?>" type="hidden">
+                                                <button type="submit" class="btn ink-reaction btn-raised btn-primary"> View </a>
                                             </form>
                                         </div>
                                     </div><!--end .card-actionbar -->
@@ -200,19 +178,13 @@ $result = $conn->query($sql);
                         <span class="title">Register</span>
                     </a>
                 </li>
-                <li>
-                    <a href="cart.php" >
-                        <div class="gui-icon"><i class="md md-computer"></i></div>
-                        <span class="title">My Cart</span>
-                    </a>
-                </li>
                 <!-- END DASHBOARD -->
             </ul><!--end .main-menu -->
             <!-- END MAIN MENU -->
 
             <div class="menubar-foot-panel">
                 <small class="no-linebreak hidden-folded">
-                    <span class="opacity-75">Copyright &copy; 2016</span> <strong>Etera</strong>
+                    <span class="opacity-75">Copyright &copy; 2016</span> <strong>Bat gergi</strong>
                 </small>
             </div>
         </div><!--end .menubar-scroll-panel-->

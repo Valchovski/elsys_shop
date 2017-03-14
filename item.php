@@ -2,34 +2,27 @@
 session_start();
 $toast = '';
 
-if(isset($_POST['user'])){
-    $username = $_POST['user']; $password = sha1($_POST['password']); $re_password = sha1($_POST['password2']);
+$db_server = "localhost";
+$db_username = "root";
+$db_pw = "";
+$db = "elsys_shop";
 
-    $db_server = "localhost";
-    $db_username = "root";
-    $db_pw = "";
-    $db = "elsys_shop";
+$conn = new mysqli($db_server, $db_username, $db_pw, $db);
 
-    $conn = new mysqli($db_server, $db_username, $db_pw, $db);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    if ($password != $re_password) {
-        header('Location: register.php?error=Passwords%20must%20match!'); die();
-    }
-    $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+$item_id = $_GET["item"];
 
-    if ($conn->query($sql) === TRUE) {
-        $_SESSION['login'] = true;
-        $_SESSION['welcome'] = true;
-        $_SESSION['user'] = $username;
-        header('Location: index.php?success=User%20created');
-    } else {
-        header('Location: index.php?error=Error%20in%20database');
-    }
-    die();
+$sql = "SELECT * FROM items WHERE id=$item_id";
+$result = $conn->query($sql) or die ($conn->error);
+
+if ($result -> num_rows > 0) {
+	$row = $result->fetch_assoc();
+} else {
+	$toast = "item doesn't exist";
 }
 ?>
 <!DOCTYPE html>
@@ -93,38 +86,31 @@ if(isset($_POST['user'])){
             </div><!--end .section-header -->
             <div class="section-body">
                 <div class="row">
-                    <div class="col-md-3 col-sm-3">
+                    <div class="col-md-6 col-sm-12">
                         <div class="card card-underline">
                             <div class="card-head">
-                                <header>Login</header>
+                                <header>Item</header>
                             </div><!--end .card-head -->
-                            <div class="card-body">
-                                <?php if( isset($_GET['error']) ) { ?>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="alert alert-danger" role="alert">
-                                                <strong>Error:</strong> <?=$_GET['error']?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                <form class="form" role="form" action="" method="post">
-                                    <div class="form-group floating-label">
-                                        <input type="text" name="user" class="form-control" id="regular2" autocomplete="off">
-                                        <label for="regular2">Username</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        <input type="password" name="password" class="form-control" id="regular2" autocomplete="off">
-                                        <label for="password2">Password</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        <input type="password" name="password2" class="form-control" id="regular2" autocomplete="off">
-                                        <label for="password2">Repeat Password</label>
-                                    </div>
-                                    <button type="submit" class="btn ink-reaction btn-raised btn-primary"> Register </button>
-                                </form>
-                            </div><!--end .card-body -->
                         </div><!--end .card -->
+						<div class="card">
+							<div class="card-head">
+								<header><?= $row['name'] ?></header>
+							</div>
+							<div class="card-body">
+								<h3>Price: BGN <?= number_format($row['price'], 2, '.', '') ?> </h3>
+							</div><!--end .card-body -->
+
+							<div class="card-actionbar">
+								<div class="card-actionbar-row">
+									<form class="form" role="form" action="/command.php?cmd=removeFromCart"
+										  method="post">
+										<input name="user_id" value="<?= $_SESSION['user_id'] ?>"
+											   type="hidden">
+										<input name="item_id" value="<?= $item_id ?>" type="hidden">
+									</form>
+								</div>
+							</div><!--end .card-actionbar -->
+						</div><!--end .card -->
                     </div>
                 </div>
             </div>
@@ -156,6 +142,12 @@ if(isset($_POST['user'])){
                     <a href="register.php" >
                         <div class="gui-icon"><i class="md md-computer"></i></div>
                         <span class="title">Register</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="cart.php" >
+                        <div class="gui-icon"><i class="md md-computer"></i></div>
+                        <span class="title">My Cart</span>
                     </a>
                 </li>
                 <!-- END DASHBOARD -->

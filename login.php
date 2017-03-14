@@ -16,11 +16,21 @@ if(isset($_POST['user'])){
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
+	
+	$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $result = $conn->query($query);
+	
+	if ($result -> num_rows > 0) {
+		$_SESSION['login'] = true;
+		$_SESSION['welcome'] = true;
+		$_SESSION['user'] = $username;
+		$_SESSION['user_id'] = $row['id'];
+		header('LOCATION:index.php'); die();
+	} else {
+		$toast = "Invalid Credentials, please try again!";
+	}
 
-    $sql = "SELECT id, username, password FROM users";
-    $result = $conn->query($sql);
-
-    if ($result -> num_rows > 0) {
+    /*if ($result -> num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             if ($row['username'] == $username and $row['password'] == $password) {
                 $_SESSION['login'] = true;
@@ -32,7 +42,7 @@ if(isset($_POST['user'])){
                 $toast = "Invalid Credentials, please try again!";
             }
         }
-    }
+    }*/
 }
 ?>
 <!DOCTYPE html>
@@ -159,7 +169,7 @@ if(isset($_POST['user'])){
 
             <div class="menubar-foot-panel">
                 <small class="no-linebreak hidden-folded">
-                    <span class="opacity-75">Copyright &copy; 2016</span> <strong>Etera</strong>
+                    <span class="opacity-75">Copyright &copy; 2016</span> <strong>Bat gergi</strong>
                 </small>
             </div>
         </div><!--end .menubar-scroll-panel-->
